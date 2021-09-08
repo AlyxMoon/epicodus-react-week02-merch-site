@@ -8,6 +8,7 @@ class App extends React.Component {
     super()
     this.state = {
       page: 0,
+      fullProductList: []
     }
   }
 
@@ -17,7 +18,14 @@ class App extends React.Component {
     })
   }
 
+  addNewProductToList = (newProduct) => {
+    const newFullProductList = this.state.fullProductList.concat(newProduct);
+    this.setState({ fullProductList: newFullProductList, page: 0 });
+  }
+
   render () {
+    console.log(this.state)
+
     return (
       <div className="App">
         <nav>
@@ -34,7 +42,9 @@ class App extends React.Component {
   
         {this.state.page === 0 && <ProductList />}
         {this.state.page === 1 && <ProductDetails />}
-        {this.state.page === 2 && <ProductCreate />}
+        {this.state.page === 2 && (
+          <ProductCreate onNewProductCreation={(product) => this.addNewProductToList(product)} />
+        )} 
       </div>
     )
   }
