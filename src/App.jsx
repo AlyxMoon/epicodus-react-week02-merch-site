@@ -40,7 +40,7 @@ class App extends React.Component {
           </button>
         </nav>
   
-        {this.state.page === 0 && <ProductList />}
+        {this.state.page === 0 && <ProductList productList={this.state.fullProductList} />}
         {this.state.page === 1 && <ProductDetails />}
         {this.state.page === 2 && (
           <ProductCreate onNewProductCreation={(product) => this.addNewProductToList(product)} />

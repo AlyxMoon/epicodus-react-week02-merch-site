@@ -8,7 +8,7 @@ function ProductCreate (props) {
     event.preventDefault();
 
     props.onNewProductCreation({
-      product: event.target.product.value,
+      name: event.target.name.value,
       color: event.target.color.value,
       price: event.target.price.value,
       description: event.target.description.value,
@@ -21,7 +21,7 @@ function ProductCreate (props) {
     <form onSubmit={createNewProduct}>
       <input
         type='text'
-        name='product'
+        name='name'
         placeholder='Product Name' />
 
       <label>Product Color:</label>
