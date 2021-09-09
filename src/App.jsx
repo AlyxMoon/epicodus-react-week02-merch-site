@@ -1,7 +1,8 @@
 import React from 'react';
-import ProductList from './pages/ProductList'
-import ProductDetails from './pages/ProductDetails'
-import ProductCreate from './pages/ProductCreate'
+import ProductList from './pages/ProductList';
+import ProductDetails from './pages/ProductDetails';
+import ProductCreate from './pages/ProductCreate';
+import ProductUpdate from './pages/ProductUpdate';
 
 import * as api from './lib/api'
 
@@ -54,7 +55,62 @@ class App extends React.Component {
     })
   }
 
+  handleUpdatingProduct = (id) => {
+    this.setState({
+      selectedProduct: this.state.fullProductList.find(product => product.id === id),
+      page: 3
+    })
+  }
+
+  updateProduct = (editProduct) => {
+    // get index of product to update
+    // findIndex this.state.selectedProduct
+    // reassign the item at that index to updated product
+
+    // set list state again
+    const index = this.state.fullProductList.findIndex(product => product.id === this.state.selectedProduct.id)
+
+    this.state.fullProductList[index] = editProduct
+    this.setState({
+      fullProductList: this.state.fullProductList,
+      page: 0
+    })
+  }
+
   render () {
+    let pageView
+// could have used an array
+    if (this.state.page === 0) {
+      pageView = (
+        <ProductList 
+          productList={this.state.fullProductList}
+          handleSelectedProduct={this.handleSelectedProduct}
+          handleDeletingProduct={this.handleDeletingProduct}
+          handleUpdatingProduct={this.handleUpdatingProduct}
+          // editing method
+        />
+      )
+    } else if (this.state.page === 1) {
+      pageView = (
+        <ProductDetails 
+          product = {this.state.selectedProduct} 
+        />
+      )
+    } else if (this.state.page === 2) {
+      pageView = (
+        <ProductCreate 
+          onNewProductCreation={(product) => this.addNewProductToList(product)} 
+        />
+      )
+    } else if (this.state.page === 3) {
+      pageView = (
+        <ProductUpdate 
+          product = {this.state.selectedProduct} 
+          onUpdatingProduct={(editProduct) => this.updateProduct(editProduct)}
+        />
+      )
+    }
+
     return (
       <div className="App">
         <nav>
@@ -66,19 +122,40 @@ class App extends React.Component {
           </button>
         </nav>
   
-        {this.state.page === 0 && (
-          <ProductList 
-            productList={this.state.fullProductList}
-            handleSelectedProduct={this.handleSelectedProduct}
-            handleDeletingProduct={this.handleDeletingProduct}
-          />
-        )}
-        {this.state.page === 1 && <ProductDetails product = {this.state.selectedProduct} />}
-        {this.state.page === 2 && (
-          <ProductCreate onNewProductCreation={(product) => this.addNewProductToList(product)} />
-        )} 
+        {pageView} 
       </div>
     )
+
+    /* alternative way with array!
+    const views = [
+      <ProductList 
+        productList={this.state.fullProductList}
+        handleSelectedProduct={this.handleSelectedProduct}
+        handleDeletingProduct={this.handleDeletingProduct}
+      />,
+      <ProductDetails 
+        product = {this.state.selectedProduct} 
+      />,
+      <ProductCreate 
+        onNewProductCreation={(product) => this.addNewProductToList(product)} 
+      />
+    ]
+
+    return (
+      <div className="App">
+        <nav>
+          <button onClick={() => this.updatePage(0)}>
+            Product List
+          </button>
+          <button onClick={() => this.updatePage(2)}>
+            Create Product
+          </button>
+        </nav>
+  
+        {views[this.state.page]} 
+      </div>
+    )
+    */
   }
 }
 
