@@ -13,7 +13,8 @@ class App extends React.Component {
     this.state = {
       page: 0,
       fullProductList: [],
-      selectedProduct: null
+      selectedProduct: null,
+      itemsInCart: []
     }
   }
 
@@ -92,6 +93,8 @@ class App extends React.Component {
 
     this.setState({
       fullProductList: this.state.fullProductList,
+      page: 0,
+      itemsInCart: this.state.itemsInCart.concat(this.state.fullProductList[index].name)
     })
   }
     
@@ -102,6 +105,14 @@ class App extends React.Component {
       fullProductList: this.state.fullProductList,
     })
   }
+
+  removeCartItem = (indexToRemove) => {
+    // ['name1', 'name2', 'name3']
+    this.setState({
+      itemsInCart: this.state.itemsInCart.filter((_, index) => index != indexToRemove)
+    })
+  }
+
 
   render () {
     let pageView
@@ -149,6 +160,15 @@ class App extends React.Component {
             Create Product
           </button>
         </nav>
+
+        <section>
+          {this.state.itemsInCart.map((item, index) => (
+            <div>
+              <p>{item}</p>
+              <button onClick={() => this.removeCartItem(index)}>Remove</button>
+            </div>
+          ))}
+        </section>
   
         {pageView} 
       </div>
