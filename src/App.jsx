@@ -77,6 +77,32 @@ class App extends React.Component {
     })
   }
 
+  purchaseProduct = () => {
+    const index = this.state.fullProductList.findIndex(product => product.id === this.state.selectedProduct.id)
+
+    this.state.fullProductList[index].quantity--
+    if (this.state.fullProductList[index].quantity < 0) {
+      this.state.fullProductList[index].quantity = 0
+    }
+
+    // this.state.fullProductList[index].quantity = Math.max(
+    //   this.state.fullProductList[index].quantity - 1,
+    //   0
+    // )
+
+    this.setState({
+      fullProductList: this.state.fullProductList,
+    })
+  }
+    
+  restockProduct = () => {
+    const index = this.state.fullProductList.findIndex(product => product.id === this.state.selectedProduct.id)
+    this.state.fullProductList[index].quantity++
+    this.setState({
+      fullProductList: this.state.fullProductList,
+    })
+  }
+
   render () {
     let pageView
 // could have used an array
@@ -93,7 +119,9 @@ class App extends React.Component {
     } else if (this.state.page === 1) {
       pageView = (
         <ProductDetails 
-          product = {this.state.selectedProduct} 
+          product = {this.state.selectedProduct}
+          purchaseProduct={this.purchaseProduct}
+          restockProduct={this.restockProduct}
         />
       )
     } else if (this.state.page === 2) {

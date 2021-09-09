@@ -49,7 +49,7 @@ function ProductUpdate (props) {
         name='quantity'
         defaultValue={product.quantity}
         placeholder='1' />
-      <button type='submit'>Add Product</button>
+      <button type='submit'>Update Product</button>
     </form>
   )  
 }
