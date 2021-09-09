@@ -3,13 +3,24 @@ import ProductList from './pages/ProductList'
 import ProductDetails from './pages/ProductDetails'
 import ProductCreate from './pages/ProductCreate'
 
+import * as api from './lib/api'
+
 class App extends React.Component {
   constructor () {
     super()
+
     this.state = {
       page: 0,
-      fullProductList: []
+      fullProductList: [],
+      selectedProduct: null
     }
+  }
+
+  async componentDidMount () {
+    const products = await api.getProducts()
+    this.setState({
+      fullProductList: products,
+    })
   }
 
   updatePage (newPage = 0) {
@@ -20,28 +31,38 @@ class App extends React.Component {
 
   addNewProductToList = (newProduct) => {
     const newFullProductList = this.state.fullProductList.concat(newProduct);
-    this.setState({ fullProductList: newFullProductList, page: 0 });
+    this.setState({ fullProductList: newFullProductList, page: 0 }, () => {
+      api.updateProducts(this.state.fullProductList)
+    });
+  }
+
+  handleSelectedProduct = (id) => {
+    const selectedProduct = this.state.fullProductList.find(product => product.id === id )
+    this.setState({
+      selectedProduct: selectedProduct,
+      page: 1
+    })
   }
 
   render () {
-    console.log(this.state)
-
     return (
       <div className="App">
         <nav>
           <button onClick={() => this.updatePage(0)}>
             Product List
           </button>
-          <button onClick={() => this.updatePage(1)}>
-            Product Details
-          </button>
           <button onClick={() => this.updatePage(2)}>
             Create Product
           </button>
         </nav>
   
-        {this.state.page === 0 && <ProductList productList={this.state.fullProductList} />}
-        {this.state.page === 1 && <ProductDetails />}
+        {this.state.page === 0 && (
+          <ProductList 
+            productList={this.state.fullProductList}
+            handleSelectedProduct={this.handleSelectedProduct}
+          />
+        )}
+        {this.state.page === 1 && <ProductDetails product = {this.state.selectedProduct} />}
         {this.state.page === 2 && (
           <ProductCreate onNewProductCreation={(product) => this.addNewProductToList(product)} />
         )} 
