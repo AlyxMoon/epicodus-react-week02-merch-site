@@ -28,7 +28,7 @@ const ProductList = (props) => {
 
             <div>
               <button>Update</button>
-              <button>Delete</button>
+              <button onClick={() => props.handleDeletingProduct(product.id)}>Delete</button>
               <button onClick={() => props.handleSelectedProduct(product.id)}>Details</button>
             </div>            
           </li>

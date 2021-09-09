@@ -30,17 +30,27 @@ class App extends React.Component {
   }
 
   addNewProductToList = (newProduct) => {
-    const newFullProductList = this.state.fullProductList.concat(newProduct);
-    this.setState({ fullProductList: newFullProductList, page: 0 }, () => {
+    this.setState({ 
+      fullProductList: this.state.fullProductList.concat(newProduct), 
+      page: 0 
+    }, () => {
       api.updateProducts(this.state.fullProductList)
     });
   }
 
   handleSelectedProduct = (id) => {
-    const selectedProduct = this.state.fullProductList.find(product => product.id === id )
     this.setState({
-      selectedProduct: selectedProduct,
+      selectedProduct: this.state.fullProductList.find(product => product.id === id),
       page: 1
+    })
+  }
+
+  handleDeletingProduct = (id) => {
+    this.setState({
+      fullProductList: this.state.fullProductList.filter(product => product.id !== id),
+      selectedProduct: null
+    }, () => {
+      api.updateProducts(this.state.fullProductList)
     })
   }
 
@@ -60,6 +70,7 @@ class App extends React.Component {
           <ProductList 
             productList={this.state.fullProductList}
             handleSelectedProduct={this.handleSelectedProduct}
+            handleDeletingProduct={this.handleDeletingProduct}
           />
         )}
         {this.state.page === 1 && <ProductDetails product = {this.state.selectedProduct} />}
