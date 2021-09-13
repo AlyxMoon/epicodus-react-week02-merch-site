@@ -1,12 +1,12 @@
-import React from 'react';
-import ProductList from './pages/ProductList';
-import ProductDetails from './pages/ProductDetails';
-import ProductCreate from './pages/ProductCreate';
-import ProductUpdate from './pages/ProductUpdate';
-
+import React from 'react'
+import { connect } from 'react-redux'
+import ProductList from './pages/ProductList'
+import ProductDetails from './pages/ProductDetails'
+import ProductCreate from './pages/ProductCreate'
+import ProductUpdate from './pages/ProductUpdate'
 import * as api from './lib/api'
 
-class App extends React.Component {
+export class App extends React.Component {
   constructor () {
     super()
 
@@ -195,7 +195,7 @@ class App extends React.Component {
           <button onClick={() => this.updatePage(0)}>
             Product List
           </button>
-          <button onClick={() => this.updatePage(2)}>
+          <button onClick={() => this.props.updatePage(2)}>
             Create Product
           </button>
         </nav>
@@ -207,22 +207,19 @@ class App extends React.Component {
   }
 }
 
-// function App () {
-//   let page = 0
-
-//   function updatePage () {
-//     page++
-//   }
-
-//   return (
-//     <div className="App">
-//       <button onClick={updatePage} />
-
-//       {page === 0 && <ProductList />}
-//       <ProductDetails />
-//       <ProductCreate />
-//     </div>
-//   );
-// }
-
-export default App;
+export default connect(
+  (state) => ({
+    products: state.products || [],
+    page: state.page || 0,
+  }),
+  (dispatch) => ({
+    updatePage: (page) => dispatch({
+      type: 'UPDATE_PAGE',
+      page,
+    }),
+    addProduct: (product) => dispatch({
+      type: 'ADD_PRODUCT',
+      product,
+    })
+  })
+)(App)
