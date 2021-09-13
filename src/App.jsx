@@ -58,6 +58,7 @@ export class App extends React.Component {
   }
 
   handleDeletingProduct = (id) => {
+    this.props.deleteProduct(id)
     this.setState({
       products: this.props.products.filter(product => product.id !== id),
       selectedProduct: null
@@ -230,6 +231,10 @@ export default connect(
     addProduct: (product) => dispatch({
       type: 'ADD_PRODUCT',
       product,
+    }),
+    deleteProduct: (id) => dispatch({
+      type: 'DELETE_PRODUCT',
+      id,
     })
   })
 )(App)
