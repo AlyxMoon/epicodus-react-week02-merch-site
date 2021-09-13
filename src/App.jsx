@@ -10,9 +10,12 @@ export class App extends React.Component {
   constructor () {
     super()
 
+    // this.props.products
+    // this.props.products
+
     this.state = {
       page: 0,
-      fullProductList: [],
+      products: [],
       selectedProduct: null,
       itemsInCart: []
     }
@@ -21,7 +24,7 @@ export class App extends React.Component {
   async componentDidMount () {
     const products = await api.getProducts()
     this.setState({
-      fullProductList: products,
+      products: products,
     })
   }
 
@@ -32,33 +35,40 @@ export class App extends React.Component {
   }
 
   addNewProductToList = (newProduct) => {
-    this.setState({ 
-      fullProductList: this.state.fullProductList.concat(newProduct), 
+    this.props.addProduct(newProduct)
+    // this.props.dispatch({
+    //   type: 'ADD_PRODUCT',
+    //   product: {
+    //     ...newProduct,
+    //   },
+    // })
+
+    this.setState({
       page: 0 
     }, () => {
-      api.updateProducts(this.state.fullProductList)
+      api.updateProducts(this.props.products)
     });
   }
 
   handleSelectedProduct = (id) => {
     this.setState({
-      selectedProduct: this.state.fullProductList.find(product => product.id === id),
+      selectedProduct: this.props.products.find(product => product.id === id),
       page: 1
     })
   }
 
   handleDeletingProduct = (id) => {
     this.setState({
-      fullProductList: this.state.fullProductList.filter(product => product.id !== id),
+      products: this.props.products.filter(product => product.id !== id),
       selectedProduct: null
     }, () => {
-      api.updateProducts(this.state.fullProductList)
+      api.updateProducts(this.props.products)
     })
   }
 
   handleUpdatingProduct = (id) => {
     this.setState({
-      selectedProduct: this.state.fullProductList.find(product => product.id === id),
+      selectedProduct: this.props.products(product => product.id === id),
       page: 3
     })
   }
@@ -69,40 +79,40 @@ export class App extends React.Component {
     // reassign the item at that index to updated product
 
     // set list state again
-    const index = this.state.fullProductList.findIndex(product => product.id === this.state.selectedProduct.id)
+    const index = this.props.products.findIndex(product => product.id === this.state.selectedProduct.id)
 
-    this.state.fullProductList[index] = editProduct
+    this.props.products[index] = editProduct
     this.setState({
-      fullProductList: this.state.fullProductList,
+      products: this.props.products,
       page: 0
     })
   }
 
   purchaseProduct = () => {
-    const index = this.state.fullProductList.findIndex(product => product.id === this.state.selectedProduct.id)
+    const index = this.props.products.findIndex(product => product.id === this.state.selectedProduct.id)
 
-    this.state.fullProductList[index].quantity--
-    if (this.state.fullProductList[index].quantity < 0) {
-      this.state.fullProductList[index].quantity = 0
+    this.props.products[index].quantity--
+    if (this.props.products[index].quantity < 0) {
+      this.props.products[index].quantity = 0
     }
 
-    // this.state.fullProductList[index].quantity = Math.max(
-    //   this.state.fullProductList[index].quantity - 1,
+    // this.props.products[index].quantity = Math.max(
+    //   this.props.products[index].quantity - 1,
     //   0
     // )
 
     this.setState({
-      fullProductList: this.state.fullProductList,
+      products: this.props.products,
       page: 0,
-      itemsInCart: this.state.itemsInCart.concat(this.state.fullProductList[index].name)
+      itemsInCart: this.state.itemsInCart.concat(this.props.products[index].name)
     })
   }
     
   restockProduct = () => {
-    const index = this.state.fullProductList.findIndex(product => product.id === this.state.selectedProduct.id)
-    this.state.fullProductList[index].quantity++
+    const index = this.props.products.findIndex(product => product.id === this.state.selectedProduct.id)
+    this.props.products[index].quantity++
     this.setState({
-      fullProductList: this.state.fullProductList,
+      products: this.props.products,
     })
   }
 
@@ -120,7 +130,7 @@ export class App extends React.Component {
     if (this.state.page === 0) {
       pageView = (
         <ProductList 
-          productList={this.state.fullProductList}
+          productList={this.props.products}
           handleSelectedProduct={this.handleSelectedProduct}
           handleDeletingProduct={this.handleDeletingProduct}
           handleUpdatingProduct={this.handleUpdatingProduct}
@@ -177,7 +187,7 @@ export class App extends React.Component {
     /* alternative way with array!
     const views = [
       <ProductList 
-        productList={this.state.fullProductList}
+        productList={this.props.products}
         handleSelectedProduct={this.handleSelectedProduct}
         handleDeletingProduct={this.handleDeletingProduct}
       />,
