@@ -1,6 +1,10 @@
 import React from 'react'
 
 const ProductList = (props) => {
+  // props.productList = [list of products]
+  // props.product = functionToCall
+
+  // props.product(1)
 
   return (
     <div className="product-list-page">
@@ -11,7 +15,7 @@ const ProductList = (props) => {
           <li key={product.id}>
             <div 
               className="color-col" 
-              style={{ 'background-color': product.color }}
+              style={{ backgroundColor: product.color }}
             >
               <div>{product.name}</div>
             </div>
@@ -23,8 +27,9 @@ const ProductList = (props) => {
             </div>
 
             <div>
-              <button>Update</button>
-              <button>Delete</button>
+              <button onClick={() => props.handleUpdatingProduct(product.id)}>Update</button>
+              <button onClick={() => props.handleDeletingProduct(product.id)}>Delete</button>
+              <button onClick={() => props.handleSelectedProduct(product.id)}>Details</button>
             </div>            
           </li>
         ))}
